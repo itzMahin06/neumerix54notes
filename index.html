@@ -181,26 +181,30 @@
     }
 
     .pdf-frame-container {
-      flex-grow: 1;
-      overflow: auto;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 12px;
-      transform-origin: center top;
-      transition: transform 0.15s ease;
-    }
-    iframe.pdf-frame {
-      width: 100%;
-      min-height: 480px;
-      border: none;
-      border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5);
-      background: #000;
-      flex-grow: 1;
-      height: 100%;
-    }
+  flex-grow: 1;
+  overflow: auto;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px;
+  /* Remove transform-origin & transform from here */
+}
+
+iframe.pdf-frame {
+  width: 100%;
+  min-height: 480px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5);
+  background: #000;
+  flex-grow: 1;
+  height: 100%;
+  transform-origin: center top;  /* Move transform-origin here */
+  transition: transform 0.15s ease;
+  /* We'll transform iframe directly */
+}
+
 
     /* Footer */
     footer {
@@ -363,10 +367,10 @@
       viewerSection.style.display = "flex";
     }
 
-    // Update viewer transform
     function updateViewer() {
-      frameContainer.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
-    }
+  pdfFrame.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
+}
+
 
     // Toolbar buttons
     zoomInBtn.onclick = () => {
