@@ -79,7 +79,7 @@
     display:none; flex-direction:column; height:100vh;
   }
   .toolbar {
-    display:flex; background:#1a2438; padding:8px;
+    position:fixed; display:flex; background:#1a2438; padding:8px;
     justify-content:space-around; align-items:center;
   }
   .toolbar button {
@@ -102,7 +102,7 @@
   <img src="logo.png" alt="Logo">
   <h1> Neumerix54 Notes </h1>
 </header>
-
+<main>
 <section class="search-container">
       <input
         type="text"
@@ -128,7 +128,7 @@
   </div>
   <iframe id="pdfFrame"></iframe>
 </div>
-
+</main> 
 <script>
 const pdfListDiv = document.getElementById('pdfList');
 const viewerDiv = document.getElementById('viewer');
