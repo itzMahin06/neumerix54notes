@@ -37,7 +37,7 @@
   }
   .toolbar {
     display:flex; background:#1a2438; padding:8px;
-    justify-content:space-between; align-items:center;
+    justify-content:space-around; align-items:center;
   }
   .toolbar button {
     background:none; border:none; color:#fff;
@@ -66,9 +66,12 @@
 
 <div class="viewer" id="viewer">
   <div class="toolbar">
+    <button onclick="zoomIn()">🔍+</button>
+    <button onclick="zoomOut()">🔍−</button>
+    <button onclick="rotate()">⟳</button>
+    <button onclick="fullScreen()">⛶</button>
+    <button id="downloadBtn">⬇ Download</button>
     <button onclick="backToList()">← Back</button>
-    <span id="pdfTitle"></span>
-    <button id="downloadBtn">Download</button>
   </div>
   <iframe id="pdfFrame"></iframe>
 </div>
@@ -77,11 +80,12 @@
 const pdfListDiv = document.getElementById('pdfList');
 const viewerDiv = document.getElementById('viewer');
 const pdfFrame = document.getElementById('pdfFrame');
-const pdfTitle = document.getElementById('pdfTitle');
 const downloadBtn = document.getElementById('downloadBtn');
 
-// Change this to your GitHub Pages raw JSON URL
-const jsonURL = 'https://neumerix54notes.vercel.app/pdfs.json';
+let currentScale = 1;
+let currentRotate = 0;
+
+const jsonURL = 'https://neumerix54.vercel.app/pdfs.json';
 
 fetch(jsonURL)
   .then(res => res.json())
@@ -91,7 +95,7 @@ fetch(jsonURL)
       const div = document.createElement('div');
       div.className = 'pdf-item';
       div.innerHTML = `<span>${pdf.title}</span> ➜`;
-      div.onclick = () => openPDF(pdf.title, pdf.fileId);
+      div.onclick = () => openPDF(pdf.fileId);
       pdfListDiv.appendChild(div);
     });
   })
@@ -100,8 +104,7 @@ fetch(jsonURL)
     console.error(err);
   });
 
-function openPDF(title, fileId) {
-  pdfTitle.textContent = title;
+function openPDF(fileId) {
   pdfFrame.src = `https://drive.google.com/file/d/${fileId}/preview`;
   downloadBtn.onclick = () => {
     window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
@@ -113,6 +116,27 @@ function openPDF(title, fileId) {
 function backToList() {
   viewerDiv.style.display = 'none';
   pdfListDiv.style.display = 'flex';
+  pdfFrame.src = '';
+  currentScale = 1;
+  currentRotate = 0;
+}
+
+function zoomIn() {
+  currentScale += 0.1;
+  pdfFrame.style.transform = `scale(${currentScale}) rotate(${currentRotate}deg)`;
+}
+function zoomOut() {
+  currentScale = Math.max(0.5, currentScale - 0.1);
+  pdfFrame.style.transform = `scale(${currentScale}) rotate(${currentRotate}deg)`;
+}
+function rotate() {
+  currentRotate += 90;
+  pdfFrame.style.transform = `scale(${currentScale}) rotate(${currentRotate}deg)`;
+}
+function fullScreen() {
+  if (pdfFrame.requestFullscreen) {
+    pdfFrame.requestFullscreen();
+  }
 }
 </script>
 
