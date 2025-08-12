@@ -94,6 +94,66 @@
     header h1 { font-size:22px; }
     .pdf-item span { font-size:16px; }
   }
+
+  .notif-bell {
+  cursor: pointer;
+  font-size: 1.4rem;
+  margin-left: auto;
+  padding: 8px;
+}
+
+.notif-sidebar {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100%;
+  background: #fff;
+  color: #000;
+  box-shadow: -3px 0 10px rgba(0,0,0,0.2);
+  z-index: 2000;
+  padding: 15px;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.notif-sidebar.open {
+  right: 0;
+}
+
+.notif-sidebar h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+}
+
+.notif-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.notif-item-title {
+  font-weight: bold;
+}
+
+.notif-date {
+  font-size: 0.8rem;
+  color: gray;
+}
+
+.notif-view-btn {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 4px 8px;
+  background: #007bff;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+    
 </style>
 </head>
 <body>
@@ -101,6 +161,17 @@
 <header>
   <img src="logo.png" alt="Logo">
   <h1> Neumerix54 Notes </h1>
+      <!-- Notification Bell Icon -->
+<div class="notif-bell" onclick="toggleNotifications()">
+  🔔
+</div>
+
+<!-- Notification Sidebar -->
+<div id="notifSidebar" class="notif-sidebar">
+  <h2>Notifications</h2>
+  <div id="notifList">Loading...</div>
+</div>
+
 </header>
 <main>
 <section class="search-container">
@@ -200,6 +271,43 @@ function fullScreen() {
   }
 }
 </script>
+      <script>
+            const notifSidebar = document.getElementById("notifSidebar");
+const notifList = document.getElementById("notifList");
+
+function toggleNotifications() {
+  notifSidebar.classList.toggle("open");
+}
+
+function loadNotifications() {
+  fetch("notifications.json") // Change to your GitHub raw link
+    .then(res => res.json())
+    .then(data => {
+      notifList.innerHTML = "";
+      data.forEach(item => {
+        const notifEl = document.createElement("div");
+        notifEl.className = "notif-item";
+        notifEl.innerHTML = `
+          <div class="notif-item-title">${item.title}</div>
+          <div class="notif-date">${item.date}</div>
+          <div class="notif-view-btn" onclick="viewNotifPDF('${item.view}')">View</div>
+        `;
+        notifList.appendChild(notifEl);
+      });
+    })
+    .catch(() => {
+      notifList.innerHTML = "Error loading notifications.";
+    });
+}
+
+function viewNotifPDF(fileId) {
+  notifSidebar.classList.remove("open");
+  openPDF(fileId); // Uses your existing function to open viewer
+}
+
+loadNotifications();
+
+      </script>
 
 </body>
 </html>
